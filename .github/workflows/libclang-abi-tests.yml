@@ -75,7 +75,7 @@ jobs:
 
   abi-dump:
     needs: abi-dump-setup
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04-llvm
     strategy:
       matrix:
         name:
