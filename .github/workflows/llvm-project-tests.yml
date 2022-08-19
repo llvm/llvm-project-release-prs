@@ -39,11 +39,17 @@ jobs:
             # Use windows-2019 due to:
             # https://developercommunity.visualstudio.com/t/Prev-Issue---with-__assume-isnan-/1597317
           - os: windows-2019
+            # On Windows, starting with win19/20220814.1, cmake choose the 32-bit
+            # python3.10.6 interpreter instead of the 64-bit interpreter.  In
+            # order to work around this, we explicitly request the 3.7.9
+            # 64-bit interpreter.  The reason to use 3.7.9, it is an older
+            # version and less likely to get a new patch release.
+            # 
             # The GitHub virtual environment has MinGW installed and in PATH, so
             # CMake will choose gcc by default.  This causes build failures, so
             # change the default to MSVC.  Users will be able to override this
             # if they want.
-            cmake_args: '-DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl'
+            cmake_args: '-DPYTHON_HOME=/c/hostedtoolcache/windows/Python/3.7.9/x64 -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl'
 
             # We're using a specific version of macOS due to:
             # https://github.com/actions/virtual-environments/issues/5900
