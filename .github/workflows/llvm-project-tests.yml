@@ -32,6 +32,30 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        include:
+          - os: ubuntu-latest
+            cmake_args: ''
+
+            # Use windows-2019 due to:
+            # https://developercommunity.visualstudio.com/t/Prev-Issue---with-__assume-isnan-/1597317
+          - os: windows-2019
+            # The GitHub virtual environment has MinGW installed and in PATH, so
+            # CMake will choose gcc by default.  This causes build failures, so
+            # change the default to MSVC.  Users will be able to override this
+            # if they want.
+            cmake_args: '-DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl'
+
+            # We're using a specific version of macOS due to:
+            # https://github.com/actions/virtual-environments/issues/5900
+          - os: macOS-11
+            # The go binding tests fail on macos:
+            # _cgo_export.c:3:10: fatal error: 'stdlib.h' file not found
+            # 
+            # There appears to be a race condition that causes
+            # llvm/test/ThinLTO/X86/cache.ll to fail on MacOS.  Disabling threads in
+            # lit fixes this.
+            cmake_args: '-DLLVM_INCLUDE_GO_TESTS=OFF -DLLVM_LIT_ARGS=-svj1'
+
         os:
           - ubuntu-latest
           # Use windows-2019 due to:
@@ -68,14 +92,14 @@ jobs:
           key: sccache-${{ matrix.os }}
           variant: sccache
       - name: Build and Test
-        uses: llvm/actions/build-test-llvm-project@main
+        shell: bash
         env:
           # Workaround for https://github.com/actions/virtual-environments/issues/5900.
           # This should be a no-op for non-mac OSes
           PKG_CONFIG_PATH: /usr/local/Homebrew/Library/Homebrew/os/mac/pkgconfig//12
-        with:
-          cmake_args: '-GNinja -DLLVM_ENABLE_PROJECTS="${{ inputs.projects }}" -DCMAKE_BUILD_TYPE=Release -DLLDB_INCLUDE_TESTS=OFF -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache'
-          build_target:  '${{ inputs.build_target }}'
+        run: |
+          cmake -G Ninja -S llvm -B build -DLLVM_ENABLE_PROJECTS="${{ inputs.projects }}" -DCMAKE_BUILD_TYPE=Release -DLLDB_INCLUDE_TESTS=OFF -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache ${{ matrix.cmake_args }}
+          ninja -C build -v ${{ inputs.build_target }} 
 
       - name: Build and Test libclc
         if: "!startsWith(matrix.os, 'windows') && contains(inputs.projects, 'libclc')"
