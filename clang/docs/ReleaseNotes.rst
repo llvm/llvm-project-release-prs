@@ -206,6 +206,9 @@ Bug Fixes
   statement in clangd (hover over the symbol, jump to definition) as well as in the AST dump.
   This also fixes `issue 55095 <https://github.com/llvm/llvm-project/issues/#55095>`_ as a
   side-effect.
+- Fix a crash when generating code coverage information for an
+  ``if consteval`` statement. This fixes
+  `Issue 57377 <https://github.com/llvm/llvm-project/issues/57377>`_.
 
 Improvements to Clang's diagnostics
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
