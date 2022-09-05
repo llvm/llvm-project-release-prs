@@ -6,6 +6,11 @@
 //
 //===----------------------------------------------------------------------===//
 
++#if defined(__linux__) && defined(__mips__)
++// Otherwise, the build fails as it cannot find syscall
++#define _GNU_SOURCE
++#endif
+
 #include "int_lib.h"
 #if defined(__linux__)
 #include <assert.h>
