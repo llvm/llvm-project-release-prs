@@ -18,7 +18,7 @@ jobs:
         test "${{ github.actor }}" = "tstellar" || test "${{ github.actor }}" = "tru"
         echo "${{ github.ref_name }}" | grep -e '^llvmorg-[0-9]\+\.[0-9]\+\.[0-9]\+\(-rc[0-9]\+\)\?$'
         release_version=`echo "${{ github.ref_name }}" | sed 's/llvmorg-//g'`
-        echo "::set-output name=release-version::$release_version"
+        echo "release-version=$release_version" >> $GITHUB_OUTPUT
 
     - name: Install Dependencies
       run: |

@@ -1,0 +1,114 @@
+name: Release Binaries
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: 'Upload binaries to the release page'
+        required: true
+        default: 'true'
+
+jobs:
+  prepare:
+    name: Prepare to build binaries
+    runs-on: ubuntu-latest
+    if: github.repository == 'llvm/llvm-project'
+    outputs:
+      release-version: ${{ steps.validate-tag.outputs.release-version }}
+      release: ${{ steps.validate-tag.outputs.release }}
+      build-dir: ${{ steps.validate-tag.outputs.build-dir }}
+      rc-flags: ${{ steps.validate-tag.outputs.rc-flags }}
+
+    steps:
+    - name: Validate and parse tag
+      id: validate-tag
+      # In order for the test-release.sh script to run correctly, the LLVM
+      # source needs to be at the following location relative to the build dir:
+      # | X.Y.Z-rcN | ./rcN/llvm-project
+      # | X.Y.Z     | ./final/llvm-project
+      #
+      # We also need to set divergent flags based on the release version:
+      # | X.Y.Z-rcN | -rc N -test-asserts
+      # | X.Y.Z     | -final
+      run: |
+        test "${{ github.actor }}" = "tstellar" || test "${{ github.actor }}" = "tru"
+        echo "${{ github.ref_name }}" | grep -e '^llvmorg-[0-9]\+\.[0-9]\+\.[0-9]\+\(-rc[0-9]\+\)\?$'
+        release_version=`echo "${{ github.ref_name }}" | sed 's/llvmorg-//g'`
+        release=`echo "$release_version" | sed 's/-.*//g'`
+        build_dir=`echo "$release_version" | sed 's,^[^-]\+,final,' | sed 's,[^-]\+-rc\(.\+\),rc\1,'`
+        rc_flags=`echo "$release_version" | sed 's,^[^-]\+,-final,' | sed 's,[^-]\+-rc\(.\+\),-rc \1 -test-asserts,' | sed 's,--,-,'`
+        echo "release-version=$release_version" >> $GITHUB_OUTPUT
+        echo "release=$release" >> $GITHUB_OUTPUT
+        echo "build-dir=$build_dir" >> $GITHUB_OUTPUT
+        echo "rc-flags=$rc_flags" >> $GITHUB_OUTPUT
+
+  build-binaries:
+    name: ${{ matrix.target.triple }}
+    needs: prepare
+    runs-on: ${{ matrix.target.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - triple: x86_64-apple-darwin
+            runs-on: macos-latest
+            brew-build-deps: >
+              ninja
+
+          - triple: x86_64-linux-gnu-ubuntu-18.04
+            runs-on: ubuntu-18.04
+            debian-build-deps: >
+              chrpath
+              gcc-multilib
+              ninja-build
+
+          - triple: x86_64-linux-gnu-ubuntu-20.04
+            runs-on: ubuntu-20.04
+            debian-build-deps: >
+              chrpath
+              gcc-multilib
+              ninja-build
+
+          - triple: x86_64-linux-gnu-ubuntu-22.04
+            runs-on: ubuntu-22.04
+            debian-build-deps: >
+              chrpath
+              gcc-multilib
+              ninja-build
+
+    steps:
+    - name: Checkout LLVM
+      uses: actions/checkout@v3
+      with:
+        path: ${{ needs.prepare.outputs.build-dir }}/llvm-project
+
+    - name: Install Brew build dependencies
+      if: matrix.target.brew-build-deps != ''
+      run: brew install ${{ matrix.target.brew-build-deps }}
+
+    - name: Install Debian build dependencies
+      if: matrix.target.debian-build-deps != ''
+      run: sudo apt install ${{ matrix.target.debian-build-deps }}
+
+    - name: Set macOS build env variables
+      if: runner.os == 'macOS'
+      run: |
+        echo "MACOSX_DEPLOYMENT_TARGET=10.9" >> $GITHUB_ENV
+
+    - name: Build and test release
+      run: >
+        ${{ needs.prepare.outputs.build-dir }}/llvm-project/llvm/utils/release/test-release.sh
+        -release ${{ needs.prepare.outputs.release }}
+        ${{ needs.prepare.outputs.rc-flags }}
+        -triple ${{ matrix.target.triple }}
+        -use-ninja
+        -no-checkout
+
+    - name: Upload binaries
+      if: github.event.inputs.upload == 'true'
+      run: >
+        ${{ needs.prepare.outputs.build-dir }}/llvm-project/llvm/utils/release/github-upload-release.py
+        --token ${{ github.token }}
+        --release ${{ needs.prepare.outputs.release-version }}
+        upload
+        --files ${{ needs.prepare.outputs.build-dir }}/clang+llvm-${{ needs.prepare.outputs.release-version }}-${{ matrix.target.triple }}.tar.xz
