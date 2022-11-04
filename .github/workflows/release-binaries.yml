@@ -12,7 +12,7 @@ jobs:
   prepare:
     name: Prepare to build binaries
     runs-on: ubuntu-latest
-    if: github.repository == 'llvm/llvm-project'
+    if: github.repository == 'str4d/llvm-project'
     outputs:
       release-version: ${{ steps.validate-tag.outputs.release-version }}
       release: ${{ steps.validate-tag.outputs.release }}
@@ -31,7 +31,7 @@ jobs:
       # | X.Y.Z-rcN | -rc N -test-asserts
       # | X.Y.Z     | -final
       run: |
-        test "${{ github.actor }}" = "tstellar" || test "${{ github.actor }}" = "tru"
+        test "${{ github.actor }}" = "tstellar" || test "${{ github.actor }}" = "tru" || test "${{ github.actor }}" = "str4d"
         echo "${{ github.ref_name }}" | grep -e '^llvmorg-[0-9]\+\.[0-9]\+\.[0-9]\+\(-rc[0-9]\+\)\?$'
         release_version=`echo "${{ github.ref_name }}" | sed 's/llvmorg-//g'`
         release=`echo "$release_version" | sed 's/-.*//g'`
