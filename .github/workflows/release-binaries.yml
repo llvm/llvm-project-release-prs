@@ -1,6 +1,7 @@
 name: Release Binaries
 
 on:
+  pull_request:
   workflow_dispatch:
     inputs:
       upload:
@@ -34,6 +35,7 @@ jobs:
       # | X.Y.Z     | -final
       run: |
         tag="${{ github.event.inputs || github.ref_name }}"
+        tag="llvmorg-15.0.4"
         echo $tag | grep -e '^llvmorg-[0-9]\+\.[0-9]\+\.[0-9]\+\(-rc[0-9]\+\)\?$'
         release_version=`echo "$tag" | sed 's/llvmorg-//g'`
         release=`echo "$release_version" | sed 's/-.*//g'`
