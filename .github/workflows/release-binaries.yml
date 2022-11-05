@@ -7,6 +7,9 @@ on:
         description: 'Upload binaries to the release page'
         required: true
         default: 'true'
+      tag:
+        description: 'Tag to build from'
+        required: true
 
 jobs:
   prepare:
@@ -31,9 +34,10 @@ jobs:
       # | X.Y.Z-rcN | -rc N -test-asserts
       # | X.Y.Z     | -final
       run: |
+        tag="${{ github.event.inputs || github.ref_name }}"
         test "${{ github.actor }}" = "tstellar" || test "${{ github.actor }}" = "tru"
-        echo "${{ github.ref_name }}" | grep -e '^llvmorg-[0-9]\+\.[0-9]\+\.[0-9]\+\(-rc[0-9]\+\)\?$'
-        release_version=`echo "${{ github.ref_name }}" | sed 's/llvmorg-//g'`
+        echo $tag | grep -e '^llvmorg-[0-9]\+\.[0-9]\+\.[0-9]\+\(-rc[0-9]\+\)\?$'
+        release_version=`echo "$tag" | sed 's/llvmorg-//g'`
         release=`echo "$release_version" | sed 's/-.*//g'`
         build_dir=`echo "$release_version" | sed 's,^[^-]\+,final,' | sed 's,[^-]\+-rc\(.\+\),rc\1,'`
         rc_flags=`echo "$release_version" | sed 's,^[^-]\+,-final,' | sed 's,[^-]\+-rc\(.\+\),-rc \1 -test-asserts,' | sed 's,--,-,'`
