@@ -15,7 +15,6 @@ jobs:
   prepare:
     name: Prepare to build binaries
     runs-on: ubuntu-latest
-    if: github.repository == 'str4d/llvm-project'
     outputs:
       release-version: ${{ steps.validate-tag.outputs.release-version }}
       release: ${{ steps.validate-tag.outputs.release }}
