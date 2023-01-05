@@ -231,6 +231,9 @@ Bug Fixes
   and Clang 15 accidentally stopped predeclaring those functions in that
   language mode. Clang 16 now predeclares those functions again. This fixes
   `Issue 56607 <https://github.com/llvm/llvm-project/issues/56607>`_.
+- In C mode, when ``e1`` has ``__attribute__((noreturn))`` but ``e2`` doesn't,
+  ``(c ? e1 : e2)`` is no longer considered noreturn.
+  `Issue 59792 <https://github.com/llvm/llvm-project/issues/59792>`_
 
 Improvements to Clang's diagnostics
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
