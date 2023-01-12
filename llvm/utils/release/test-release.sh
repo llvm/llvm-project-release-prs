@@ -385,8 +385,13 @@ function configure_llvmCore() {
             ;;
     esac
 
-    project_list=${projects// /;}
-    runtime_list=${runtimes// /;}
+    if [ "$Phase" -eq "3" ]; then
+      project_list=${projects// /;}
+      runtime_list=${runtimes// /;}
+    else
+      project_list="clang"
+      runtime_list=""
+    fi
     echo "# Using C compiler: $c_compiler"
     echo "# Using C++ compiler: $cxx_compiler"
 
