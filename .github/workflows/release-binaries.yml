@@ -49,33 +49,13 @@ jobs:
   build-binaries:
     name: ${{ matrix.target.triple }}
     needs: prepare
-    timeout-minutes: 600
     runs-on: ${{ matrix.target.runs-on }}
     strategy:
       fail-fast: false
       matrix:
         target:
-          - triple: x86_64-apple-darwin
-            runs-on: macos-latest
-            brew-build-deps: >
-              ninja
-
-          - triple: x86_64-linux-gnu-ubuntu-18.04
-            runs-on: ubuntu-18.04
-            debian-build-deps: >
-              chrpath
-              gcc-multilib
-              ninja-build
-
-          - triple: x86_64-linux-gnu-ubuntu-20.04
-            runs-on: ubuntu-20.04
-            debian-build-deps: >
-              chrpath
-              gcc-multilib
-              ninja-build
-
           - triple: x86_64-linux-gnu-ubuntu-22.04
-            runs-on: ubuntu-22.04-4x16
+            runs-on: ubuntu-22.04-8x32
             debian-build-deps: >
               chrpath
               gcc-multilib
