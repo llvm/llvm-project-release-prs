@@ -49,6 +49,7 @@ jobs:
   build-binaries:
     name: ${{ matrix.target.triple }}
     needs: prepare
+    timeout-minutes: 600
     runs-on: ${{ matrix.target.runs-on }}
     strategy:
       fail-fast: false
@@ -107,6 +108,8 @@ jobs:
         -triple ${{ matrix.target.triple }}
         -use-ninja
         -no-checkout
+        -no-test-suite
+        -use-gzip
 
     - name: Upload binaries
       if: github.event.inputs.upload == 'true'
