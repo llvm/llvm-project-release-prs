@@ -74,8 +74,8 @@ jobs:
               gcc-multilib
               ninja-build
 
-          - triple: x86_64-linux-gnu-ubuntu-20.04
-            runs-on: ubuntu-20.04-4x16 
+          - triple: x86_64-linux-gnu-ubuntu-22.04
+            runs-on: ubuntu-22.04-4x16
             debian-build-deps: >
               chrpath
               gcc-multilib
