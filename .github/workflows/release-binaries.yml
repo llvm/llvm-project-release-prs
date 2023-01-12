@@ -35,8 +35,9 @@ jobs:
       # | X.Y.Z     | -final
       run: |
         test "${{ github.actor }}" = "tstellar" || test "${{ github.actor }}" = "tru" || test "${{ github.actor }}" = "str4d"
-        echo "${{ github.ref_name }}" | grep -e '^llvmorg-[0-9]\+\.[0-9]\+\.[0-9]\+\(-rc[0-9]\+\)\?$'
-        release_version=`echo "${{ github.ref_name }}" | sed 's/llvmorg-//g'`
+        #echo "${{ github.ref_name }}" | grep -e '^llvmorg-[0-9]\+\.[0-9]\+\.[0-9]\+\(-rc[0-9]\+\)\?$'
+        #release_version=`echo "${{ github.ref_name }}" | sed 's/llvmorg-//g'`
+        release_version=15.0.6
         release=`echo "$release_version" | sed 's/-.*//g'`
         build_dir=`echo "$release_version" | sed 's,^[^-]\+,final,' | sed 's,[^-]\+-rc\(.\+\),rc\1,'`
         rc_flags=`echo "$release_version" | sed 's,^[^-]\+,-final,' | sed 's,[^-]\+-rc\(.\+\),-rc \1 -test-asserts,' | sed 's,--,-,'`
