@@ -388,9 +388,11 @@ function configure_llvmCore() {
     if [ "$Phase" -eq "3" ]; then
       project_list=${projects// /;}
       runtime_list=${runtimes// /;}
+      targets=""
     else
       project_list="clang"
       runtime_list=""
+      targets="-DLLVM_TARGETS_TO_BUILD=Native"
     fi
     echo "# Using C compiler: $c_compiler"
     echo "# Using C++ compiler: $cxx_compiler"
@@ -405,7 +407,7 @@ function configure_llvmCore() {
         -DLLVM_ENABLE_PROJECTS="$project_list" \
         -DLLVM_LIT_ARGS="-j $NumJobs" \
         -DLLVM_ENABLE_RUNTIMES="$runtime_list" \
-        $ExtraConfigureFlags $BuildDir/llvm-project/llvm \
+        $extra_flags $targets $BuildDir/llvm-project/llvm \
         2>&1 | tee $LogDir/llvm.configure-Phase$Phase-$Flavor.log
     env CC="$c_compiler" CXX="$cxx_compiler" \
         cmake -G "$generator" \
@@ -414,7 +416,7 @@ function configure_llvmCore() {
         -DLLVM_ENABLE_PROJECTS="$project_list" \
         -DLLVM_LIT_ARGS="-j $NumJobs" \
         -DLLVM_ENABLE_RUNTIMES="$runtime_list" \
-        $ExtraConfigureFlags $BuildDir/llvm-project/llvm \
+        $extra_flags $targets $BuildDir/llvm-project/llvm \
         2>&1 | tee $LogDir/llvm.configure-Phase$Phase-$Flavor.log
 
     cd $BuildDir
