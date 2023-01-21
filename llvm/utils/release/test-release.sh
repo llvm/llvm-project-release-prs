@@ -24,7 +24,6 @@ Release_no_dot=""
 RC=""
 Triple=""
 use_gzip="no"
-use_pxz="no"
 do_checkout="yes"
 do_debug="no"
 do_asserts="no"
@@ -61,7 +60,6 @@ function usage() {
     echo " -test-asserts        Test with asserts on. [default: no]"
     echo " -no-compare-files    Don't test that phase 2 and 3 files are identical."
     echo " -use-gzip            Use gzip instead of xz."
-    echo " -use-pxz             Use parallel xz for compresing package."
     echo " -use-ninja           Use ninja instead of make/gmake."
     echo " -configure-flags FLAGS  Extra flags to pass to the configure step."
     echo " -git-ref sha         Use the specified git ref for testing instead of a release."
@@ -144,9 +142,6 @@ while [ $# -gt 0 ]; do
         -use-gzip | --use-gzip )
             use_gzip="yes"
             ;;
-	-use-pxz | --use-pxz )
-            use_pxz="yes"
-	    ;;
         -no-rt )
             do_rt="no"
             ;;
@@ -516,8 +511,6 @@ function package_release() {
     mv llvmCore-$Release-$RC.install/usr/local $Package
     if [ "$use_gzip" = "yes" ]; then
       tar cf - $Package | gzip -9c > $BuildDir/$Package.tar.gz
-    elif [ "$use_pxz" = "yes" ]; then
-      tar cf - $Package | pxz -9ce -T $NumJobs > $BuildDir/$Package.tar.xz
     else
       tar cf - $Package | xz -9ce > $BuildDir/$Package.tar.xz
     fi
