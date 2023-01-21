@@ -60,6 +60,7 @@ jobs:
               chrpath
               gcc-multilib
               ninja-build
+              pxz
 
     steps:
     - name: Checkout LLVM
@@ -89,7 +90,7 @@ jobs:
         -use-ninja
         -no-checkout
         -no-test-suite
-        -use-gzip
+        -use-pxz || true
 
     - name: Upload binaries
       if: github.event.inputs.upload == 'true'
