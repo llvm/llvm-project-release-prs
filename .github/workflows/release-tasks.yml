@@ -9,7 +9,6 @@ on:
 jobs:
   release-tasks:
     runs-on: ubuntu-latest
-    if: github.repository == 'llvm/llvm-project'
     steps:
 
     - name: Validate Tag
