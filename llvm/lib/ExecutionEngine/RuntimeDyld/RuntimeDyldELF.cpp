@@ -2405,6 +2405,7 @@ Error RuntimeDyldELF::finalizeLoad(const ObjectFile &Obj,
     }
   }
 
+  GOTOffsetMap.clear();
   GOTSectionID = 0;
   CurrentGOTIndex = 0;
 
