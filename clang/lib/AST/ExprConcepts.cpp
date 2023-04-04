@@ -59,6 +59,15 @@ ConceptSpecializationExpr::ConceptSpecializationExpr(EmptyShell Empty)
     : Expr(ConceptSpecializationExprClass, Empty) {}
 
 ConceptSpecializationExpr *ConceptSpecializationExpr::Create(
+    const ASTContext &C, ConceptDecl *NamedConcept,
+    ImplicitConceptSpecializationDecl *SpecDecl,
+    const ConstraintSatisfaction *Satisfaction, bool Dependent,
+    bool ContainsUnexpandedParameterPack) {
+  return Create(C, NamedConcept, /*ArgsAsWritten*/ nullptr, SpecDecl, Satisfaction,
+                Dependent, ContainsUnexpandedParameterPack);
+}
+
+ConceptSpecializationExpr *ConceptSpecializationExpr::Create(
     const ASTContext &C, NestedNameSpecifierLoc NNS,
     SourceLocation TemplateKWLoc, DeclarationNameInfo ConceptNameInfo,
     NamedDecl *FoundDecl, ConceptDecl *NamedConcept,

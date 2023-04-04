@@ -82,6 +82,12 @@ public:
 
   static ConceptSpecializationExpr *
   Create(const ASTContext &C, ConceptDecl *NamedConcept,
+         ImplicitConceptSpecializationDecl *SpecDecl,
+         const ConstraintSatisfaction *Satisfaction, bool Dependent,
+         bool ContainsUnexpandedParameterPack);
+
+  static ConceptSpecializationExpr *
+  Create(const ASTContext &C, ConceptDecl *NamedConcept,
          const ASTTemplateArgumentListInfo *ArgsAsWritten,
          ImplicitConceptSpecializationDecl *SpecDecl,
          const ConstraintSatisfaction *Satisfaction, bool Dependent,
