@@ -724,6 +724,8 @@ Bug Fixes in This Version
 - Fix crash when passing a braced initializer list to a parentehsized aggregate
   initialization expression.
   (`#63008 <https://github.com/llvm/llvm-project/issues/63008>`_).
+- Fix lambdas and other anonymous function names not respecting ``-fdebug-prefix-map``
+  (`#62192 <https://github.com/llvm/llvm-project/issues/62192>`_)
 
 Bug Fixes to Compiler Builtins
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
