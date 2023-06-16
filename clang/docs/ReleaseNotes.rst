@@ -726,6 +726,8 @@ Bug Fixes in This Version
   (`#63008 <https://github.com/llvm/llvm-project/issues/63008>`_).
 - Fix lambdas and other anonymous function names not respecting ``-fdebug-prefix-map``
   (`#62192 <https://github.com/llvm/llvm-project/issues/62192>`_)
+- Apply ``-fmacro-prefix-map`` to anonymous tags in template arguments
+  (`#63219 <https://github.com/llvm/llvm-project/issues/63219>`_).
 
 Bug Fixes to Compiler Builtins
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
