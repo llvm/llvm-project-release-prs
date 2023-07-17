@@ -272,3 +272,8 @@ auto a = new A('a', {1.1});
 // expected-warning@-1 {{braces around scalar init}}
 // beforecxx20-warning@-2 {{aggregate initialization of type 'A' from a parenthesized list of values is a C++20 extension}}
 }
+
+namespace gh63758 {
+  struct S {} s;
+  auto words = (char[])s; // expected-error {{C-style cast from 'struct S' to 'char[]' is not allowed}}
+};
