@@ -1,0 +1,18 @@
+name: Sync Release Repositories
+permissions:
+  contents: write
+on:
+  workflow_dispatch
+env:
+  RELEASE_BRANCH: tru/test_branch
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch LLVM sources
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Run Sync Script
+        run: |
+          llvm/utils/git/sync-release-repo.sh

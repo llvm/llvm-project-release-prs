@@ -21,7 +21,7 @@ MAIN_REMOTE=$(uuidgen)
 RELEASE_REMOTE=$(uuidgen)
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-git remote add $MAIN_REMOTE "https://github.com/llvm/llvm-project"
+git remote add $MAIN_REMOTE "https://github.com/tru/llvm-project"
 git remote add $RELEASE_REMOTE "https://github.com/llvm/llvm-project-release-prs"
 
 # Make sure we are up to date on all our repos first
