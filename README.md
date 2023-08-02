@@ -1,4 +1,3 @@
-#test
 # The LLVM Compiler Infrastructure
 
 Welcome to the LLVM project!
