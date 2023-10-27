@@ -719,6 +719,8 @@ Bug Fixes in This Version
   points (i.e., uses function descriptor objects instead).
 - Fixes a ``clang-17`` regression where ``LLVM_UNREACHABLE_OPTIMIZE=OFF``
   cannot be used with ``Release`` mode builds. (`#68237 <https://github.com/llvm/llvm-project/issues/68237>`_).
+- Fix crash from constexpr evaluator evaluating uninitialized arrays as rvalue.
+  Fixes (`#67317 <https://github.com/llvm/llvm-project/issues/67317>`_)
 
 Bug Fixes to Compiler Builtins
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
